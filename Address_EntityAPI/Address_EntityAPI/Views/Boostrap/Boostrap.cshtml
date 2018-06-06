@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects+Daughter" />
+<link rel="stylesheet" href="https://assets.adepto.as/themes/fonts/nexa/stylesheet.css" />
+<link rel="stylesheet" href="clear-sans/stylesheet.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css" />
+<link rel="stylesheet" href="css/examples.css" />
+<link rel="stylesheet" href="css/jquery.sweet-modal.min.css" />
+@*<link href="~/Content/alert/iao-alert.css" rel="stylesheet" />*@
+@*<link href="~/Content/Datatables/css/bootstrap.css" rel="stylesheet" />*@
+@*<link href="~/Content/alert/minified/css/iao-alert.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/Datatables/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+<link href="~/Scripts/sweetalert.css" rel="stylesheet" />
+<link href="~/Scripts/ssi-modal.css" rel="stylesheet" />
+<link href="~/Content/alert/minified/jquery.confirm-1.1.css" rel="stylesheet" />
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/LegalEntities.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js" async></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.sweet-modal.min.js"></script>
+@*<script src="~/Content/alert/iao-alert.jquery.js"></script>
+    <script src="~/Content/alert/minified/js/iao-alert.jquery.min.js"></script>*@
+@*<script src="~/Content/Datatables/scripts/jquery.js"></script>*@
+<script src="~/Content/Datatables/scripts/jquery.dataTables.js"></script>
+@*<script src="~/Content/Datatables/scripts/angular.js"></script>*@
+<script src="~/Content/Datatables/scripts/angular-datatables.js"></script>
+<script src="~/Content/Datatables/scripts/dirPagination.js"></script>
+<script src="~/Scripts/sweetalert.js"></script>
+<script src="~/Scripts/ssi-modal.js"></script>
+<script src="~/Content/alert/bootstrap-confirmation.js"></script>
+<script src="~/Content/alert/confirmation.js"></script>
+<script src="~/Content/alert/popover.js"></script>
+<script src="~/Content/alert/minified/jquery.confirm-1.1.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSave").click(function () {
+            if ($("#txtName").val() == "" ) {
+                sweetAlert("EntityName Is Empty !!", "Please Mention", "error");
+            }
+            else if ($("#txtAbbr").val() == "") {
+                sweetAlert("Abbreviation Is Empty !!", "Please Mention", "error");
+            }
+            else {
+                sweetAlert("Entity details Saved Successfully.", "success");
+            }
+        });
+        $("#btnUpdate").click(function () {
+            if ($("#txtName").val() == "") {
+                sweetAlert("EntityName Is Empty !!", "Please Mention", "error");
+            }
+            else if ($("#txtAbbr").val() == "") {
+                sweetAlert("Abbreviation Is Empty !!", "Please Mention", "error");
+            }
+            else {
+                sweetAlert("Entity details Updated Successfully.", "success");
+            }
+        });
+        $("#btnDelete").click(function () {
+            //sweetAlert("Entity details deleted Successfully.", "success");
+        });
+    });
+
+</script>
+
+
+<div ng-app="myApp">
+    <div class="form-group" style="padding-top: 5%; padding-bottom: 2%;">
+        <button type="button" class="btn btn-success" data-target="#addEntity" data-toggle="modal"><i class="fa fa-plus"> </i> Add Entity</button>
+    </div>
+    <div ng-controller="myCtrl" ng-init="GetAllData()" class="divList">
+        <form class="form-inline">
+            <div class="row" style="padding-bottom: 2%;">
+                <div class="col-sm-6">
+                    <div class="dataTables_length" id="entry-grid_length">
+                        <label>Show <select name="entry-grid_length" aria-controls="entry-grid" class="form-control input-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-left: 25%;">
+                    <label>search</label>
+                    <input type="text" ng-model="search" class="form-control" placeholder="search" />
+                </div>
+            </div>
+        </form>
+        <p class="divHead" style="text-align:center"><strong>List of Entities</strong></p>
+        <table cellpadding="12" style="text-align:center" class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b ng-click="sort('EntityId')">
+                        EntityId
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='EntityId'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('EntityName')">
+                        EntityName
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='EntityName'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('Abbreviation')">
+                        Abbreviation
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='Abbreviation'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b>Action</b>
+                </td>
+            </tr>
+            <tr dir-paginate="entity in LegalEntities|itemsPerPage:5| filter:search|orderBy:sortKey:reverse">
+                <td>
+                    {{entity.EntityId}}
+                </td>
+                <td>
+                    {{entity.EntityName}}
+                </td>
+                <td>
+                    {{entity.Abbreviation}}
+                </td>
+                <td>
+                    <button type="button" class="fa fa-pencil-square-o" data-target="#editEntity" data-toggle="modal" ng-click="UpdateEmp(entity)"></button>
+                    <button type="button" id="btnDelete" class="fa fa-trash" ng-click="DeleteEmp(entity)"></button>
+                    @*<button id="btnDelete" class="fa fa-trash" data-toggle="confirmation" ng-click="DeleteEmp(entity)"></button>*@
+                </td>
+            </tr>
+        </table>
+        <dir-pagination-controls max-size="5"
+                                 direction-links="true"
+                                 boundary-links="true">
+
+        </dir-pagination-controls>
+        <div id="addEntity" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog" id="close" style="padding-top: 10%;padding-left: 5%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Add Detail</h4>
+                    </div>
+                    <form name="addlegal" ng-submit="InsertData(addlegal.$valid)" novalidate>
+                        <div class="modal-body">
+                            <input type="hidden" class="form-control" ng-model="id">
+
+                            <div id="name-group" class="form-group" ng-class="{ 'has-error' : addlegal.Name.$invalid && !addlegal.Name.$pristine }">
+                                <label for="Name">EntityName:</label>
+                                <input type="text" id="txtName" autocomplete="off" name="Name" class="form-control" ng-model="Name" required>
+                                <p ng-show="addlegal.Name.$dirty && addlegal.Name.$error.required"
+                                   class="help-block">Entity Name is required</p>
+                                @*<p ng-show="addlegal.Name.$error.minlength" class="help-block">
+                                    Name is too short.
+                                </p>
+                                <p ng-show="addlegal.Name.$error.maxlength" class="help-block">
+                                    Name is too long.
+                                </p>*@
+                                @*<input type="text" ng-required="true" name="Name" ng-model="Name" class="form-control" placeholder="Entity Name">
+                                <span class="help-block" ng-if="addlegal.Name.$invalid && !addlegal.Name.$pristine">
+                                    Entity is required.
+                                </span>*@
+                                @*<input type="text" name="Name" id="txtName" ng-model="Name" class="form-control" placeholder="Entity Name" required />*@
+                                @*<span class="help-block" ng-if="addlegal.$submitted && addlegal.Name.$invalid">
+                                    Entity is required.
+                                </span>*@
+                                @*<span class="help-block"
+                                      ng-show="addlegal.Name.$invalid && !addlegal.Name.$pristine">
+                                    Entity name is required.
+                                </span>*@
+                                @*<span class="hide help-inline"> Entity is required.</span>*@
+                            </div>
+                            <div id="name-group" class="form-group" ng-class="{ 'has-error' : addlegal.Abbr.$invalid && !addlegal.Abbr.$pristine }">
+                                <label for="Abbr">Abbreviation:</label>
+                                <input type="text" id="txtAbbr" autocomplete="off" name="Abbr" class="form-control" ng-model="Abbr"
+                                       ng-minlength="2" ng-maxlength="4" required>
+                                <p ng-show="addlegal.Abbr.$dirty && addlegal.Abbr.$error.required"
+                                   class="help-block">Abbreviation is required</p>
+                                <p ng-show="addlegal.Abbr.$error.minlength" class="help-block">
+                                    Abbreviation is too short.
+                                </p>
+                                <p ng-show="addlegal.Abbr.$error.maxlength" class="help-block">
+                                    Abbreviation should be 4 characters.
+                                </p>
+                                @*<input type="text" name="Abbr" id="txtAbbr" ng-model="Abbr" class="form-control" required min="2" max="4" />
+                                @*<span class="help-block" ng-if="addlegal.$submitted && addlegal.Abbr.$error.required">
+                                    Abbreviation is required.
+                                </span>
+                                <span class="hide help-inline"> Abbreviation is required.</span>
+                                <span class="help-block" ng-show="addlegal.$submitted && addlegal.Abbr.$error.min">
+                                    Abbreviation should be greater than 1.
+                                </span>
+                                <span class="help-block" ng-show="addlegal.$submitted && addlegal.Abbr.$error.max">
+                                    Abbreviation should be less than 5.
+                                </span>*@
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            @*<button type="submit" class="btn btn-primary"
+                                    ng-disabled="addlegal.$invalid">
+                                Submit
+                            </button>*@        
+                            <input type="submit" id="btnSave" class="btn btn-success" value="Submit" data-dismiss="modal" ng-click="InsertData(addlegal.$valid)"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="editEntity" class="modal fade" role="dialog">
+            <div class="modal-dialog" style="padding-top: 10%;padding-left: 5%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Edit Detail</h4>
+                    </div>
+                    <form name="editlegal" novalidate>
+                        <div class="modal-body">
+                            <input type="hidden" class="form-control" ng-model="id">
+
+                            <div id="name-group" class="form-group" ng-class="{ 'has-error' : editlegal.Name.$invalid && !editlegal.Name.$pristine }">
+                                <label for="Name">EntityName:</label>
+                                <input type="text" id="txtName" autocomplete="off" name="Name" class="form-control" ng-model="Name" required>
+                                <p ng-show="editlegal.Name.$dirty && addlegal.Name.$error.required"
+                                   class="help-block">Entity Name is required</p>
+                                @*<input type="text" name="Name" ng-model="Name" class="form-control" placeholder="Entity Name" required />
+                                <span class="help-block" ng-if="editlegal.$submitted && editlegal.Name.$invalid">
+                                    Entity is required.
+                                </span>*@
+                            </div>
+                            <div id="name-group" class="form-group" ng-class="{ 'has-error' : editlegal.Abbr.$invalid && !editlegal.Abbr.$pristine }">
+                                <label for="Abbr">Abbreviation:</label>
+                                <input type="text" id="txtAbbr" autocomplete="off" name="Abbr" class="form-control" ng-model="Abbr"
+                                       ng-minlength="2" ng-maxlength="4" required>
+                                <p ng-show="editlegal.Abbr.$dirty && editlegal.Abbr.$error.required"
+                                   class="help-block">Abbreviation is required</p>
+                                <p ng-show="editlegal.Abbr.$error.minlength" class="help-block">
+                                    Abbreviation is too short.
+                                </p>
+                                <p ng-show="editlegal.Abbr.$error.maxlength" class="help-block">
+                                    Abbreviation should be 4 characters.
+                                </p>
+                                @*<input type="text" name="Abbr" ng-model="Abbr" class="form-control" required min="2" max="4" />
+                                <span class="help-block" ng-if="editlegal.$submitted && editlegal.Abbr.$error.required">
+                                    Abbreviation is required.
+                                </span>
+                                <span class="help-block" ng-if="editlegal.$submitted && editlegal.Abbr.$error.min">
+                                    Abbreviation should be greater than 1.
+                                </span>
+                                <span class="help-block" ng-if="editlegal.$submitted && editlegal.Abbr.$error.max">
+                                    Abbreviation should be less than 4.
+                                </span>*@
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" id="btnUpdate" class="btn btn-warning" value="Update" data-dismiss="modal" ng-click="UpdateDetails(editlegal.$valid)" />
+                            @*<input type="button" id="btnUpdate" class="btn btn-warning" value="Update" ng-click="UpdateDetails()" />*@
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.Hidden("EntityId_")
+
+</div>
+

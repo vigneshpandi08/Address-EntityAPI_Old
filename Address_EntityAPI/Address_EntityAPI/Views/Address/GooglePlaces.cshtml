@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "GooglePlaces";
+}
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+<link href="~/Scripts/sweetalert.css" rel="stylesheet" />
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/Addresses.js"></script>
+<script src="~/Content/Datatables/scripts/jquery.js"></script>
+<script src="~/Content/Datatables/scripts/jquery.dataTables.js"></script>
+<script src="~/Content/Datatables/scripts/angular.js"></script>
+<script src="~/Content/Datatables/scripts/angular-datatables.js"></script>
+<script src="~/Content/Datatables/scripts/dirPagination.js"></script>
+<script src="~/Scripts/sweetalert.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkPhtSQNo3X6V7hJ5Tv9vpAFcs4_Af-k4&libraries=places&callback=initAutocomplete"
+        async defer></script>
+
+<div ng-app="myApp">
+    <div class="form-group" style="padding-top: 5%; padding-bottom: 2%;">
+        <a href="~/Address/AddAddress">
+            <input type="button" class="btn btn-success" value="Add Address"/>
+        </a>
+    </div>
+    <div ng-controller="myCtrl" ng-init="GetAllData()" class="divList">
+        <form class="form-inline">
+            <div class="row" style="padding-bottom: 2%;">
+                <div class="col-sm-6">
+                    <div class="dataTables_length" id="entry-grid_length">
+                        <label>Show <select name="entry-grid_length" aria-controls="entry-grid" class="form-control input-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-left: 25%;">
+                    <label>search</label>
+                    <input type="text" ng-model="search" class="form-control" placeholder="search" />
+                </div>
+            </div>
+        </form>
+        <p class="divHead" style="text-align:center"><strong>List of Addresses</strong></p>
+        <table cellpadding="12" style="text-align:center" class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b ng-click="sort('AddressId')">
+                        AddressId
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='AddressId'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('AddressLine1')">
+                        AddressLine1
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='AddressLine1'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('City')">
+                        City
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='City'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('State')">
+                        State
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='State'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('Country')">
+                        Country
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='Country'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('Zipcode')">
+                        Zipcode
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='Zipcode'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b>Action</b>
+                </td>
+            </tr>
+            <tr dir-paginate="address in Addresses|itemsPerPage:5| filter:search|orderBy:sortKey:reverse">
+                <td>
+                    {{address.AddressId}}
+                </td>
+                <td>
+                    {{address.AddressLine1}}
+                </td>
+                <td>
+                    {{address.City}}
+                </td>
+                <td>
+                    {{address.State}}
+                </td>
+                <td>
+                    {{address.Country}}
+                </td>
+                <td>
+                    {{address.Zipcode}}
+                </td>
+                <td>
+                    <a href="~/Address/UpdateAddress">
+                        <button type="button" class="fa fa-pencil-square-o" ng-click="UpdateData(address)"></button>
+                    </a>
+                    <button type="button" class="fa fa-trash" ng-click="DeleteData(address)"></button>
+                </td>
+            </tr>
+        </table>
+        <dir-pagination-controls max-size="5"
+                                 direction-links="true"
+                                 boundary-links="true">
+
+        </dir-pagination-controls>
+    </div>
+    @Html.Hidden("AddressId_")
+</div>
+
+
+
+
+

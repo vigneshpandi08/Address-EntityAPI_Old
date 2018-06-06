@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/alert/iao-alert.css" rel="stylesheet" />
+<link href="~/Content/Datatables/css/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/alert/minified/css/iao-alert.min.css" rel="stylesheet" />
+<link href="~/Content/Datatables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/q.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="~/Content/alert/iao-alert.jquery.js"></script>
+<script src="~/Content/alert/minified/js/iao-alert.jquery.min.js"></script>
+<script src="~/Content/Datatables/scripts/jquery.js"></script>
+<script src="~/Content/Datatables/scripts/jquery.dataTables.js"></script>
+<script src="~/Content/Datatables/scripts/angular.js"></script>
+<script src="~/Content/Datatables/scripts/angular-datatables.js"></script>
+<script src="~/Content/Datatables/scripts/dirPagination.js"></script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSave").click(function () {
+                $.iaoAlert({
+                    msg: "Success + Light Theme",
+                    type: "success",
+                    mode: "light",
+                })
+            });
+        });
+</script>
+
+<div ng-app="myApp">
+    <div class="form-group" style="padding-top: 5%; padding-bottom: 2%;">
+        <button type="button" class="btn btn-success" data-target="#addEntity" data-toggle="modal"><i class="fa fa-plus"> </i> Add New</button>
+    </div>
+    <div ng-controller="myCtrl" ng-init="GetAllData()" class="divList">
+        <form class="form-inline">
+            <div class="row" style="padding-bottom: 2%;">
+                <div class="col-sm-6">
+                    <div class="dataTables_length" id="entry-grid_length">
+                        <label>Show <select name="entry-grid_length" aria-controls="entry-grid" class="form-control input-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-left: 25%;">
+                    <label>search</label>
+                    <input type="text" ng-model="search" class="form-control" placeholder="search" />
+                </div>
+            </div>
+        </form>
+        <p class="divHead" style="text-align:center"><strong>List of Entities</strong></p>
+        <table cellpadding="12" style="text-align:center" class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b ng-click="sort('EntityId')">
+                        EntityId
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='EntityId'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('EntityName')">
+                        EntityName
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='EntityName'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b ng-click="sort('Abbreviation')">
+                        Abbreviation
+                        <span class="glyphicon sort-icon" ng-show="sortKey=='Abbreviation'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+                        </span>
+                    </b>
+                </td>
+                <td>
+                    <b>Action</b>
+                </td>
+            </tr>
+            <tr dir-paginate="Emp in LegalEntities|itemsPerPage:5| filter:search|orderBy:sortKey:reverse">
+                <td>
+                    {{Emp.EntityId}}
+                </td>
+                <td>
+                    {{Emp.EntityName}}
+                </td>
+                <td>
+                    {{Emp.Abbreviation}}
+                </td>
+                <td>
+                    <button type="button" class="fa fa-pencil-square-o" data-target="#editEntity" data-toggle="modal" ng-click="UpdateEmp(Emp)"></button>
+                    <button type="button" class="fa fa-trash" ng-click="DeleteEmp(Emp)"></button>
+                </td>
+            </tr>
+        </table>
+        <dir-pagination-controls max-size="5"
+                                 direction-links="true"
+                                 boundary-links="true">
+
+        </dir-pagination-controls>
+        <div id="addEntity" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Add Detail</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" ng-model="id">
+
+                        <div class="form-group">
+                            <label for="firstName">EntityName:</label>
+                            <input type="text" class="form-control" id="txtName" ng-model="Name" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Abbreviation:</label>
+                            <input type="text" class="form-control" id="txtAbbr" ng-model="Abbr" maxlength="100">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>*@
+                        <button id="btnSave" class="btn btn-success" value="Submit" ng-click="InsertData()">Submit</button>
+                        @*<input type="button" id="btnSave" class="btn btn-success" value="Submit" ng-click="InsertData()" />*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="editEntity" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Edit Detail</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" ng-model="id">
+
+                        <div class="form-group">
+                            <label for="firstName">EntityName:</label>
+                            <input type="text" class="form-control" id="txtName" ng-model="Name" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Abbreviation:</label>
+                            <input type="text" class="form-control" id="txtAbbr" ng-model="Abbr" maxlength="100">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>*@
+                        <input type="button" id="btnSave" class="btn btn-warning" value="Update" ng-click="UpdateEmp(Emp)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.Hidden("EntityId_")
+
+</div>
+
+
+
